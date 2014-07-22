@@ -4,23 +4,28 @@ import (
 	"os"
 )
 
-func (e *endpoint) new(in *zone) name {
+func (e *endpoint) new(in *zone, nm string) {
 	e.in = in
-	if in != nil {
-		err := os.MkdirAll(root+e.Path()+"~", os.ModeDir)
-		if err != nil {
-			panic(err)
-		}
-		return e
+	e.name = nm
+	var err error = nil
+	path := ""
+	if in == nil {
+		path = root
+	} else {
+		path = root + e.Path_zone()
 	}
-	err := os.MkdirAll(root+e.name, os.ModeDir)
+	f, err := os.Create(path + e.name)
+	defer f.Close()
+	f.Chmod(0700)
+	/*
+		!TODO: Infile authority and metadata writing
+	*/
 	if err != nil {
 		panic(err)
 	}
-	return e
 }
 
-func (e *endpoint) delegate(to *endpoint) {
+func (e *endpoint) delegate(to *owner) {
 	if e.in != nil {
 		e.in.origin = to
 	} /*else {
@@ -48,4 +53,8 @@ func (e *endpoint) FullName() string {
 
 func (e *endpoint) Path() string {
 	return e.in.Path() + "/" + e.name
+}
+
+func (e *endpoint) Path_zone() string {
+	return e.in.Path()
 }

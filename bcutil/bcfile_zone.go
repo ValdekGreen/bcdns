@@ -5,23 +5,21 @@ import (
 	"strings"
 )
 
-func (z *zone) new(in *zone) name {
+func (z *zone) new(in *zone, nm string) {
 	z.in = in
+	z.name = nm
+	var err error = nil
 	if in != nil {
-		err := os.MkdirAll(root+z.Path()+"~"+z.origin.FullName(), os.ModeDir)
-		if err != nil {
-			panic(err)
-		}
-		return z
+		err = os.MkdirAll(root+z.Path(), 0700)
+	} else {
+		err = os.MkdirAll(root+z.name, 0700)
 	}
-	err := os.MkdirAll(root+z.name+"~"+z.origin.FullName(), os.ModeDir)
 	if err != nil {
 		panic(err)
 	}
-	return z
 }
 
-func (z *zone) delegate(to *endpoint) {
+func (z *zone) delegate(to *owner) {
 	z.origin = to
 }
 
@@ -53,13 +51,10 @@ func (z *zone) FullName() string {
 
 func (z *zone) Path() string {
 	inverse := func(strarr []string) []string {
-		strarrb := strarr
-		k := 0
-		for i := len(strarr); i > 0; i-- {
-			strarrb[k] = strarr[i]
-			k++
+		for i, j := 0, len(strarr)-1; i < j; i, j = i+1, j-1 {
+			strarr[i], strarr[j] = strarr[j], strarr[i]
 		}
-		return strarrb //["hype", "zzz", "yyy", "name"]
+		return strarr //["hype", "zzz", "yyy", "name"]
 	}
 	strarr := inverse(strings.Split(z.FullName(), ".")) //on inp: ".name.yyy.zzz.hype" -> ["name", "yyy", "zzz", "hype"]
 	return strings.Join(strarr, "/")                    //"hype/zzz/yyy/name"
