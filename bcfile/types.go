@@ -11,9 +11,11 @@ type zone struct {
 	name   string
 	in     *zone  //<nil> means \\
 	origin *owner //it recorded to endpoint in same thone with same name
+	endp   map[string]*endpoint
 }
 
 type owner struct { //the fields recorded to a file
+	label   string //the label that is used in a keys/
 	own     pgp.Entity
 	records map[name][]string //maps names to records
 }

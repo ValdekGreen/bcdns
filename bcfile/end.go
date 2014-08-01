@@ -6,31 +6,22 @@ import (
 
 func (e *endpoint) new(in *zone, nm string, own *owner) {
 	e.in = in
-	e.name = nm
-	var err error = nil
-	path := ""
-	if in == nil {
-		path = root
-	} else {
-		path = e.Path()
+	if e.in == nil {
+		panic("The endpoint" + nm + "isn't properly initializated: zone is ab")
 	}
-	f, err := os.Create(path + e.name)
-	defer f.Close()
-	f.Chmod(0700)
+	e.name = nm
+	in.endp[nm] = e
 	/*
 		!TODO: Infile authority and metadata writing
 	*/
-	if err != nil {
-		panic(err)
-	}
 }
 
 func (e *endpoint) delegate(to *owner) {
 	if e.in != nil {
 		e.in.origin = to
-	} /*else {
-	!TODO: Infile authority and metadata
-	} */
+	}
+	e.origin.AddName(e)
+	e.in.delegate(to) //delegating the endpoint means delegating a full zone *.endpoint.xxx...
 }
 
 func (e *endpoint) move_admin(to *zone) {
@@ -56,6 +47,9 @@ func (e *endpoint) FullName() string {
 }
 
 func (e *endpoint) Path() string {
+	if e.in == nil {
+		panic("The endpoint" + e.Name() + "isn't properly initializated")
+	}
 	return e.in.Path()
 }
 

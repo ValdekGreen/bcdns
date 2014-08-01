@@ -16,6 +16,7 @@ func (z *zone) new(in *zone, nm string, own *owner) {
 	}
 	endf, _ := os.Open(z.Path())
 	defer endf.Close()
+	z.endp = make(map[string]*endpoint)
 	if err != nil {
 		panic(err)
 	}
@@ -23,6 +24,16 @@ func (z *zone) new(in *zone, nm string, own *owner) {
 
 func (z *zone) delegate(to *owner) {
 	z.origin = to
+	dgate, err := os.OpenFile(z.Path()+"../DGATE", os.O_APPEND, 0666)
+	if os.IsNotExist(err) {
+		dgate, err = os.Create(z.Path() + "../DGATE")
+	}
+	defer dgate.Close()
+	if err != nil {
+		panic(err.Error())
+	}
+	dgate.Write([]byte(z.Name() + ":" + to.label + "\n"))
+	to.Sign(z)
 }
 
 func (z *zone) move_admin(to *zone) {
