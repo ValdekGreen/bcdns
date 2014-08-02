@@ -24,9 +24,9 @@ func (z *Zone) New(in *Zone, nm string, own *owner) {
 
 func (z *Zone) delegate(to *owner) {
 	z.origin = to
-	dgate, err := os.OpenFile(z.Path()+"../DGATE", os.O_APPEND, 0666)
+	dgate, err := os.OpenFile(z.Path()+"../;DGATE", os.O_APPEND, 0666)
 	if os.IsNotExist(err) {
-		dgate, err = os.Create(z.Path() + "../DGATE")
+		dgate, err = os.Create(z.Path() + "../;DGATE")
 	}
 	defer dgate.Close()
 	if err != nil {

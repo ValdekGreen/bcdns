@@ -20,9 +20,9 @@ func (o *owner) ReadKeyRing(l string) {
 }
 
 func (o *owner) Sign(z *Zone) {
-	sigf, err := os.Create(z.Path() + "SIG")
+	sigf, err := os.Create(z.Path() + ";SIG")
 	if err != nil {
-		panic("SIG file from " + z.FullName() + " open failed " + err.Error())
+		panic(";SIG file from " + z.FullName() + " open failed " + err.Error())
 	}
 	defer sigf.Close()
 	msg, errmsg := z.ReadString()

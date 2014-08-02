@@ -32,7 +32,7 @@ func generate_handlers(root string) {
 	if err != nil {
 		panic(err)
 	}
-	http.Handle("bc/"+root, NewFilesRequestHandler(new(Zone)))
+	http.Handle("bc/"+root, websocket.Handler(NewFilesRequestHandler(new(bcfile.Zone))))
 }
 
 func FileServerHandler() {

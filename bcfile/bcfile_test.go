@@ -67,7 +67,7 @@ func TestSigner(t *testing.T) {
 
 func TestDelegate(t *testing.T) {
 	mytunelspace.delegate(vald_own)
-	fcheck, err := os.Open(mytunelspace.Path() + "../DGATE")
+	fcheck, err := os.Open(mytunelspace.Path() + "../;DGATE")
 	defer fcheck.Close()
 	if err != nil {
 		defer t.Fail()
