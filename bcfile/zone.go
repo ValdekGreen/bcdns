@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (z *zone) new(in *zone, nm string, own *owner) {
+func (z *Zone) New(in *Zone, nm string, own *owner) {
 	z.in = in
 	z.name = nm
 	var err error = nil
@@ -22,7 +22,7 @@ func (z *zone) new(in *zone, nm string, own *owner) {
 	}
 }
 
-func (z *zone) delegate(to *owner) {
+func (z *Zone) delegate(to *owner) {
 	z.origin = to
 	dgate, err := os.OpenFile(z.Path()+"../DGATE", os.O_APPEND, 0666)
 	if os.IsNotExist(err) {
@@ -36,21 +36,21 @@ func (z *zone) delegate(to *owner) {
 	to.Sign(z)
 }
 
-func (z *zone) move_admin(to *zone) {
+func (z *Zone) move_admin(to *Zone) {
 	os.Rename(root+z.Path(), to.Path()+z.name) //probably not works! test and implement a bicycle
 }
 
-func (z *zone) move(to *zone) {
+func (z *Zone) move(to *Zone) {
 	/*
 		!TODO: Infile authority and metadata
 	*/
 }
 
-func (z *zone) Name() string {
+func (z *Zone) Name() string {
 	return z.name
 }
 
-func (z *zone) ZonesNames() string {
+func (z *Zone) ZonesNames() string {
 	s := ""
 	for {
 		if z.in != nil {
@@ -62,11 +62,11 @@ func (z *zone) ZonesNames() string {
 	}
 }
 
-func (z *zone) FullName() string {
+func (z *Zone) FullName() string {
 	return "." + z.name + z.ZonesNames() //.name.yyy.zzz.hype -- example
 }
 
-func (z *zone) Path() string {
+func (z *Zone) Path() string {
 	inverse := func(strarr []string) []string {
 		for i, j := 0, len(strarr)-1; i < j; i, j = i+1, j-1 {
 			strarr[i], strarr[j] = strarr[j], strarr[i]
@@ -77,6 +77,6 @@ func (z *zone) Path() string {
 	return root + strings.Join(strarr, "/")             //"hype/zzz/yyy/name"
 }
 
-func (z *zone) Owner() *owner {
+func (z *Zone) Owner() *owner {
 	return z.origin
 }

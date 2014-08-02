@@ -1,27 +1,10 @@
 package bcfile
 
 import (
-	//"bufio"
 	pgp "code.google.com/p/go.crypto/openpgp"
-	//"fmt"
 	"os"
 	"strings"
 )
-
-func OwnerFromDGATE(z *zone) *owner {
-	dgate, err := os.OpenFile(z.Path()+"../DGATE", os.O_RDONLY, 0666)
-	defer dgate.Close()
-	if err != nil {
-		panic(err)
-	}
-	//bdgate := bufio.NewReader(dgate)
-	//str, err := bdgate.ReadString('\n')
-	if err != nil {
-		panic(err)
-	}
-	own := new(owner)
-	return own //!NOT WORKS
-}
 
 func (o *owner) ReadKeyRing(l string) {
 	if l != "" {
@@ -36,7 +19,7 @@ func (o *owner) ReadKeyRing(l string) {
 	}
 }
 
-func (o *owner) Sign(z *zone) {
+func (o *owner) Sign(z *Zone) {
 	sigf, err := os.Create(z.Path() + "SIG")
 	if err != nil {
 		panic("SIG file from " + z.FullName() + " open failed " + err.Error())
@@ -49,7 +32,7 @@ func (o *owner) Sign(z *zone) {
 	pgp.DetachSign(sigf, &o.own, strings.NewReader(msg), nil)
 }
 
-func (o *owner) Write(to name) {
+func (o *owner) Write(to Name) {
 	f, err := os.Create(to.Path() + to.Name() + ".endp")
 	defer f.Close()
 	for i := 0; i < len(o.records)-1; i++ {
@@ -60,6 +43,6 @@ func (o *owner) Write(to name) {
 	}
 }
 
-func (o *owner) AddName(what name) {
+func (o *owner) AddName(what Name) {
 	o.records[what] = []string{}
 }

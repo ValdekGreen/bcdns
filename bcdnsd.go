@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/ValdekGreen/bcdns/bcsocket"
 	"github.com/miekg/dns"
 	"log"
 	"net"
@@ -48,19 +49,10 @@ func handleQ(w dns.ResponseWriter, r *dns.Msg) {
 }
 
 func serve(net, name, secret string) {
-	switch name {
-	case "":
-		server := &dns.Server{Pool: *pool, Addr: ":8053", Net: net, TsigSecret: nil}
-		err := server.ListenAndServe()
-		if err != nil {
-			fmt.Printf("Failed to setup the "+net+" server: %s\n", err.Error())
-		}
-	default:
-		server := &dns.Server{Pool: *pool, Addr: ":8053", Net: net, TsigSecret: map[string]string{name: secret}}
-		err := server.ListenAndServe()
-		if err != nil {
-			fmt.Printf("Failed to setup the "+net+" server: %s\n", err.Error())
-		}
+	server := &dns.Server{Pool: *pool, Addr: ":8053", Net: net, TsigSecret: map[string]string{name: secret}}
+	err := server.ListenAndServe()
+	if err != nil {
+		fmt.Printf("Failed to setup the "+net+" server: %s\n", err.Error())
 	}
 }
 
@@ -87,8 +79,8 @@ func main() {
 		pprof.StartCPUProfile(f)
 		defer pprof.StopCPUProfile()
 	}
-
 	dns.HandleFunc(".", handleQ)
+	go bcsocket.FileServerHandler()
 	go serve("tcp", name, secret)
 	go serve("udp", name, secret)
 	sig := make(chan os.Signal)

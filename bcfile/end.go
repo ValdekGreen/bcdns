@@ -4,10 +4,10 @@ import (
 	"os"
 )
 
-func (e *endpoint) new(in *zone, nm string, own *owner) {
+func (e *endpoint) New(in *Zone, nm string, own *owner) {
 	e.in = in
 	if e.in == nil {
-		panic("The endpoint" + nm + "isn't properly initializated: zone is ab")
+		panic("The endpoint " + nm + " isn't properly initializated: zone is ab")
 	}
 	e.name = nm
 	in.endp[nm] = e
@@ -21,14 +21,14 @@ func (e *endpoint) delegate(to *owner) {
 		e.in.origin = to
 	}
 	e.origin.AddName(e)
-	e.in.delegate(to) //delegating the endpoint means delegating a full zone *.endpoint.xxx...
+	e.in.delegate(to) //delegating the endpoint means delegating a full Zone *.endpoint.xxx...
 }
 
-func (e *endpoint) move_admin(to *zone) {
+func (e *endpoint) move_admin(to *Zone) {
 	os.Rename(e.Path()+e.name, to.Path()+e.name)
 }
 
-func (e *endpoint) move(to *zone) {
+func (e *endpoint) move(to *Zone) {
 	/*
 		!TODO: Infile authority and metadata
 	*/
