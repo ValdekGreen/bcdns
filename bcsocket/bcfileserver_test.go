@@ -8,8 +8,8 @@ import (
 )
 
 func TestEcho(t *testing.T) {
-	origin := "http://localhost/"
-	url := "ws://localhost:8054/bc"
+	origin := "ws://localhost:8054/bcget?valdek.tzone"
+	url := "ws://localhost:8054/bcget?admin.valdek.tzone"
 	ws, err := websocket.Dial(url, "", origin)
 	if err != nil {
 		log.Fatal(err)
@@ -17,10 +17,7 @@ func TestEcho(t *testing.T) {
 	if _, err := ws.Write([]byte("hello, world!\n")); err != nil {
 		log.Fatal(err)
 	}
-	var msg = make([]byte, 512)
-	var n int
-	if n, err = ws.Read(msg); err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Received: %s.\n", msg[:n])
+	var msg string
+	fmt.Println(websocket.Message.Receive(ws, &msg))
+	fmt.Printf("Received: %s.\n", msg)
 }

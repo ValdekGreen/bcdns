@@ -1,6 +1,7 @@
 package bcfile
 
 import (
+	"fmt"
 	"os"
 	"strings"
 )
@@ -43,6 +44,13 @@ func (z *Zone) ReadStringArmored() (str string, err error) {
 		p = append(p, b...)
 		p = append(p, ';')
 	}
+	return string(p), err
+}
+
+func (e *endpoint) ReadStringArmored() (str string, err error) {
+	var p []byte = make([]byte, 1024)
+	e.Read(p)
+	fmt.Println("sign.go::Reading ", e, e.Path(), string(p))
 	return string(p), err
 }
 

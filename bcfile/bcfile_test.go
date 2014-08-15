@@ -40,9 +40,10 @@ func TestName2Path(t *testing.T) {
 }
 
 func TestWrite(t *testing.T) {
-	r_tzone := []string{"AAAA ::1", "A 127.0.0.1"}
-	r_mts_admin := []string{"AAAA fc0e:69cb:d79c:97f9:0e1b:1656:2b3f:2829", "A 192.168.0.1"}
-	r_mts_homepc := []string{"AAAA fc1e:69cb:d59c:97f9:0e1b:1256:2b3f:2211", "A 192.168.0.2"}
+	//r_tzone := []string{"tzone	3600	IN	AAAA	::1", "tzone	3600	IN	A	127.0.0.1"}
+	r_tzone := []string{"AAAA	::1", "A	127.0.0.1"}
+	r_mts_admin := []string{"AAAA 	fc0e:69cb:d79c:97f9:0e1b:1656:2b3f:2829", "A 	192.168.0.1"}
+	r_mts_homepc := []string{"AAAA 	fc1e:69cb:d59c:97f9:0e1b:1256:2b3f:2211", "A 	192.168.0.2"}
 	root_own.records = make(map[Name][]string)
 	root_own.records[tzone] = r_tzone
 	root_own.Write(tzone)

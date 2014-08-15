@@ -4,40 +4,24 @@ import (
 	"code.google.com/p/go.net/websocket"
 	"fmt"
 	"github.com/ValdekGreen/bcdns/bcfile"
-	"io"
 	"net/http"
-	"os"
 	"strings"
 )
 
-func Server(ws *websocket.Conn) {
+var names *bcfile.Parser
+
+func StrServer(ws *websocket.Conn) {
 	fmt.Println(ws.Request().URL.String())
-	io.Copy(ws, ws)
-}
-
-func NewFilesRequestHandler(z *bcfile.Zone) func(ws *websocket.Conn) {
-	str, err := z.ReadStringArmored()
+	answ, err := names.Names[strings.Split(ws.Request().URL.String(), "?")[1]].ReadStringArmored()
 	if err != nil {
 		panic(err)
 	}
-	strr := strings.NewReader(str)
-	return func(ws *websocket.Conn) {
-		io.Copy(ws, strr)
-	}
+	websocket.Message.Send(ws, answ)
 }
 
-func generate_handlers(root string) {
-	zone, err := os.Open(root)
-	defer zone.Close()
-	if err != nil {
-		panic(err)
-	}
-	http.Handle("bc/"+root, websocket.Handler(NewFilesRequestHandler(new(bcfile.Zone))))
-}
-
-func FileServerHandler() {
-	generate_handlers("testicullo/")
-	http.Handle("/bc", websocket.Handler(Server))
+func FileServerHandler(p *bcfile.Parser) {
+	names = p
+	http.Handle("/bcget", websocket.Handler(StrServer))
 	err := http.ListenAndServe(":8054", nil)
 	if err != nil {
 		panic("ListenAndServe: " + err.Error())

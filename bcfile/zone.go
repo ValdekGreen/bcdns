@@ -66,15 +66,19 @@ func (z *Zone) FullName() string {
 	return "." + z.name + z.ZonesNames() //.name.yyy.zzz.hype -- example
 }
 
-func (z *Zone) Path() string {
+func NameToPath(n Name) string {
 	inverse := func(strarr []string) []string {
 		for i, j := 0, len(strarr)-1; i < j; i, j = i+1, j-1 {
 			strarr[i], strarr[j] = strarr[j], strarr[i]
 		}
 		return strarr //["hype", "zzz", "yyy", "name"]
 	}
-	strarr := inverse(strings.Split(z.FullName(), ".")) //on inp: ".name.yyy.zzz.hype" -> ["name", "yyy", "zzz", "hype"]
+	strarr := inverse(strings.Split(n.FullName(), ".")) //on inp: ".name.yyy.zzz.hype" -> ["name", "yyy", "zzz", "hype"]
 	return root + strings.Join(strarr, "/")             //"hype/zzz/yyy/name"
+}
+
+func (z *Zone) Path() string {
+	return NameToPath(z)
 }
 
 func (z *Zone) Owner() *owner {

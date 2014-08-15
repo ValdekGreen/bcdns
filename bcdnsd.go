@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/ValdekGreen/bcdns/bcfile"
 	"github.com/ValdekGreen/bcdns/bcsocket"
 	"github.com/miekg/dns"
 	"log"
@@ -80,9 +81,12 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 	dns.HandleFunc(".", handleQ)
-	go bcsocket.FileServerHandler()
+	allnames := new(bcfile.Parser)
+	allnames.Init_path = "testicullo/"
+	allnames.Parse(nil, nil)
 	go serve("tcp", name, secret)
 	go serve("udp", name, secret)
+	go bcsocket.FileServerHandler(allnames)
 	sig := make(chan os.Signal)
 	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
 forever:

@@ -39,6 +39,7 @@ type Name interface {
 	FullName() string                    //get everything
 	Path() string                        //get path relative to Name root
 	Owner() *owner                       //get owner
+	ReadStringArmored() (str string, err error)
 }
 
 func _inline_ohno(err error) {
