@@ -1,7 +1,7 @@
 package bcfile
 
 import (
-	pgp "code.google.com/p/go.crypto/openpgp"
+	"github.com/kisom/cryptutils/common/public"
 )
 
 var root string = "testicullo/" //Root path, need to set externally
@@ -16,8 +16,13 @@ type Zone struct {
 
 type owner struct { //the fields recorded to a file
 	label   string //the label that is used in a keys/
-	own     pgp.Entity
+	own     *Keypair
 	records map[Name][]string //maps Names to records
+}
+
+type Keypair struct {
+	pub  *public.PublicKey
+	priv *public.PrivateKey
 }
 
 //A file type -- the concrette pc
@@ -39,7 +44,7 @@ type Name interface {
 	FullName() string                    //get everything
 	Path() string                        //get path relative to Name root
 	Owner() *owner                       //get owner
-	ReadStringArmored() (str string, err error)
+	ReadBytesArmored() (str []byte, err error)
 }
 
 func _inline_ohno(err error) {

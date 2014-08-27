@@ -21,22 +21,6 @@ type NameParser interface {
 	Parse(origin *Parser, from NameParser)
 }
 
-func correct_name(name string) bool {
-	return name != "SIG" || name != "DGATE"
-}
-
-func FilterNames(Names []string) []string {
-	j := 0
-	var filtered []string = make([]string, len(Names))
-	for i := 0; i < len(Names); i++ {
-		if Names[i] != "SIG" || Names[i] != "DGATE" {
-			filtered[j] = Names[i]
-			j++
-		}
-	}
-	return filtered[:j]
-}
-
 func parse_loop(origin *Parser, from NameParser) {
 	var croot *os.File
 	var err error
@@ -85,7 +69,7 @@ func parse_loop(origin *Parser, from NameParser) {
 								panic(err.Error() + " in reading dgate label of " + end.Name())
 							}
 						}
-						own.ReadKeyRing(labelstr)
+						//own.ReadKeyRing(labelstr)
 					}()
 					own.records = make(map[Name][]string)
 					var str string = ""

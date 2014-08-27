@@ -10,9 +10,9 @@ func (z *Zone) New(in *Zone, nm string, own *owner) {
 	z.name = nm
 	var err error = nil
 	if in != nil {
-		err = os.MkdirAll(z.Path(), 0700)
+		err = os.MkdirAll(z.Path(), 0770)
 	} else {
-		err = os.MkdirAll(root+z.name, 0700)
+		err = os.MkdirAll(root+z.name, 0770)
 	}
 	endf, _ := os.Open(z.Path())
 	defer endf.Close()
@@ -24,7 +24,7 @@ func (z *Zone) New(in *Zone, nm string, own *owner) {
 
 func (z *Zone) delegate(to *owner) {
 	z.origin = to
-	dgate, err := os.OpenFile(z.Path()+"../;DGATE", os.O_APPEND, 0666)
+	dgate, err := os.OpenFile(z.Path()+"../;DGATE", os.O_APPEND, 0770)
 	if os.IsNotExist(err) {
 		dgate, err = os.Create(z.Path() + "../;DGATE")
 	}

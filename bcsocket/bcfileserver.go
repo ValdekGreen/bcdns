@@ -12,7 +12,7 @@ var names *bcfile.Parser
 
 func StrServer(ws *websocket.Conn) {
 	fmt.Println(ws.Request().URL.String())
-	answ, err := names.Names[strings.Split(ws.Request().URL.String(), "?")[1]].ReadStringArmored()
+	answ, err := names.Names[strings.Split(ws.Request().URL.String(), "?")[1]].ReadBytesArmored()
 	if err != nil {
 		panic(err)
 	}

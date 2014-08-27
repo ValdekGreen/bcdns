@@ -2,6 +2,7 @@ package bcfile
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -18,8 +19,8 @@ var homepc = new(endpoint)
 var awesomesite = new(endpoint) //boobies.tzone
 
 func TestInit(t *testing.T) {
-	root_own.ReadKeyRing("root")
-	vald_own.ReadKeyRing("vald")
+	root_own.ReadKeyRing("root", []byte("passroot"))
+	vald_own.ReadKeyRing("vald", []byte("passvald"))
 	tzone.New(nil, "tzone", root_own)
 	xxxzx.New(tzone, "xxxzx", root_own)
 	mytunelspace.New(tzone, "valdek", root_own) //will be delegated
@@ -60,12 +61,6 @@ func TestZoneReader(t *testing.T) {
 	}
 }
 
-func TestSigner(t *testing.T) {
-	sigm, _ := mytunelspace.ReadString()
-	fmt.Println("Signing now: " + sigm)
-	root_own.Sign(mytunelspace)
-}
-
 func TestDelegate(t *testing.T) {
 	mytunelspace.delegate(vald_own)
 	fcheck, err := os.Open(mytunelspace.Path() + "../;DGATE")
@@ -80,4 +75,21 @@ func TestDelegate(t *testing.T) {
 	if !strings.Contains(string(b), string(signm)) {
 		t.Fail()
 	}
+}
+
+func TestSigner(t *testing.T) {
+	sigm, _ := mytunelspace.ReadBytesArmored()
+	fmt.Print("Signing now: " + string(sigm))
+	vald_own.Sign(mytunelspace)
+	defer func(z *Zone) {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered::TestSigner", r)
+			sigf, _ := os.Open(mytunelspace.Path() + ";SIG")
+			defer sigf.Close()
+			signature, _ := ioutil.ReadAll(sigf)
+			fmt.Println(signature)
+			t.Fail()
+		}
+	}(mytunelspace)
+	vald_own.Check(mytunelspace)
 }
