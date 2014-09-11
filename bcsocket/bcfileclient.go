@@ -2,9 +2,11 @@ package bcsocket
 
 import (
 	"code.google.com/p/go.net/websocket"
-	//"crypto/md5"
+	"crypto/md5"
 	"fmt"
-	//"io"
+	"github.com/ValdekGreen/bcdns/bcfile"
+	"io"
+	"io/ioutil"
 	"strings"
 	"time"
 )
@@ -55,15 +57,27 @@ func (p *Package) Bytes() []byte {
 //Just giveaway all contents with header
 func (p *Package) String() string {
 	var symbols string
-	//h := md5.New()
+	h := md5.New()
 	switch p.header.t {
 	case TypeUpdReq:
 		symbols = "?"
 		Name_name := strings.Split(p.conn.RemoteAddr().String(), "?")[1]
-		if []byte(Name_name)[0] == '.' {
-			fmt.Println("It is zone")
+		if []byte(Name_name)[0] == '.' { //if first symbol of
+			fmt.Println(Name_name + "It is zone")
+			z := new(bcfile.Zone)
+			z.New(nil, strings.Split(Name_name, ".")[1], nil)
+			str, err := z.ReadString()
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println("zone_content: " + str)
+			io.WriteString(h, str)
 		} else {
-			fmt.Println("It is endpoint")
+			endpoint_content, err := ioutil.ReadFile(bcfile.NameOfNameToPath(Name_name) + ".endp")
+			if err != nil {
+				panic(err)
+			}
+			io.WriteString(h, string(endpoint_content))
 		}
 		var err error = nil
 		if err != nil {
@@ -72,6 +86,7 @@ func (p *Package) String() string {
 	default:
 		symbols = ""
 	}
+	symbols = symbols + string(h.Sum(nil))
 	p.body = symbols
 	return strings.Join([]string{p.header.name,
 		p.header.emitter,
