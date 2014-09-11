@@ -54,13 +54,13 @@ Message consists from Header and body. Header districted from body with ';' symb
 
 Header consists of: 
 
-* name, rather zone that endpoint
-
 * emmitter, the hostname that changed a zone
 
 * revision, a GMT+0 time and date to minute
 
 * type, a symbol that signals about contents message
+
+Name of the zone is derived from URL, but functions that casting the package have need of name to hash
 
 All fields are distrected by ':'
 
@@ -70,8 +70,6 @@ Can be either an update, either data message.
 
 Update message can be either a request (type U), either answer (type u). 
 
-In first case the only symbol of body is '?'. 
-
-In second case the only symbol of body is ' '
+In first case there is '?' and hash of current zone. 
 
 Data message can be either a signature (type S), either serialised zone (type s)

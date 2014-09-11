@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestEcho(t *testing.T) {
+func TestStrServer(t *testing.T) {
 	origin := "ws://localhost:8054/bcget?valdek.tzone"
 	url := "ws://localhost:8054/bcget?admin.valdek.tzone"
 	ws, err := websocket.Dial(url, "", origin)
@@ -21,3 +21,10 @@ func TestEcho(t *testing.T) {
 	fmt.Println(websocket.Message.Receive(ws, &msg))
 	fmt.Printf("Received: %s.\n", msg)
 }
+
+// func TestUpdServer(t *testing.T) {
+// 	origin := "ws://localhost:8054/bcupd?valdek.tzone"
+// 	url := "ws://localhost:8054/bcupd?valdek.tzone"
+// 	ws, err := websocket.Dial(url, "", origin)
+// 	websocket.Message.Send(ws, "")
+// }
